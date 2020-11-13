@@ -1,6 +1,6 @@
 function displighthouse()
 clear all;
-load('lighthouse');
+load('1');
 figure(1);
 imshow(xx,[0 255]);
 figure(2);
