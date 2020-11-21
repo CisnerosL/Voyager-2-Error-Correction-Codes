@@ -18,7 +18,7 @@ paddedLength = k * numMsgs;
 
 intStream(paddedLength) = 0;
 messages = reshape(intStream, k, []);
-decodedMessages = zeros(size(messages));
+encodedMessages = zeros(size(mWE))
 
 gp = rsgenpoly(n, k, primitivePolynomial);
 
