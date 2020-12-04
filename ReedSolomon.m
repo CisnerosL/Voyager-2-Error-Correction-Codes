@@ -5,7 +5,7 @@ image = uint8(imread('earth.png'));
 imageDim = size(image);
 
 % Sets the snr value (dB) for our simulated AWGN
-snr = 15;
+snr = 11;
 
 n = 255;
 k = 223;
