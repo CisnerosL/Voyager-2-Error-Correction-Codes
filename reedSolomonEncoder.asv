@@ -4,6 +4,7 @@ function reedSolomonBitstream = reedSolomonEncoder(bitstream,snr)
 % Loads the image and stores its dimensions
 %image = uint8(imread('earth.png'));
 %imageDim = size(image);
+%image = bitstream;
 
 % Sets the snr value (dB) for our simulated AWGN
 %snr = 15;
@@ -17,7 +18,7 @@ m = 8;
 %bitstream = reshape(de2bi(image, 'left-msb'), 1, []);
 
 % The encoder function requires 
-numInts = size(bitstream,2); %imageDim(1) * imageDim(2) * imageDim(3);
+numInts = sizbitstream,2)%imageDim(1) * imageDim(2) * imageDim(3);
 numMsgs = (uint32(numInts / k));
 paddedLength = k * numMsgs;
 
@@ -29,8 +30,6 @@ gp = rsgenpoly(n, k, primitivePolynomial);
 
 rsEncoder = comm.RSEncoder(n, k, gp);
 rsDecoder = comm.RSDecoder(n, k, gp);
-
-encodedMessages = zeros(255,8610);%todo dont pre-allocate memory
 
 for msg = 1:numMsgs
     encodedMessages(:, msg) = rsEncoder(messages(:, msg));
