@@ -4,7 +4,6 @@ function reedSolomonBitstream = reedSolomonEncoder(bitstream,snr)
 % Loads the image and stores its dimensions
 %image = uint8(imread('earth.png'));
 %imageDim = size(image);
-%image = bitstream;
 
 % Sets the snr value (dB) for our simulated AWGN
 %snr = 15;
@@ -18,7 +17,7 @@ m = 8;
 %bitstream = reshape(de2bi(image, 'left-msb'), 1, []);
 
 % The encoder function requires 
-numInts = sizbitstream,2)%imageDim(1) * imageDim(2) * imageDim(3);
+numInts = length(bitstream);
 numMsgs = (uint32(numInts / k));
 paddedLength = k * numMsgs;
 
@@ -31,23 +30,15 @@ gp = rsgenpoly(n, k, primitivePolynomial);
 rsEncoder = comm.RSEncoder(n, k, gp);
 rsDecoder = comm.RSDecoder(n, k, gp);
 
+encodedMessages = zeros(255,8610);%todo dont pre-allocate memory
+
 for msg = 1:numMsgs
     encodedMessages(:, msg) = rsEncoder(messages(:, msg));
 end
 
 encodedBitstream = reshape(de2bi(reshape(encodedMessages, 1, []), 'left-msb'), 1, []);
 
-noisyEncodedBitstream = addNoise(encodedBitstream, snr)
-
-%noisyEncodedBitstream = int8(awgn(double(encodedBitstream), snr));
-%noisyEncodedBitstream(find(noisyEncodedBitstream < 0)) = 0;
-%noisyEncodedBitstream(find(noisyEncodedBitstream > 1)) = 1;
-
-% Adds noise to the bitstream to simulate uncoded transmission on a noisy
-% channel.
-%noisyBitstream = int8(awgn(double(bitstream), snr));
-%noisyBitstream(find(noisyBitstream < 0)) = 0;
-%noisyBitstream(find(noisyBitstream > 1)) = 1;
+noisyEncodedBitstream = addNoise(encodedBitstream, snr);
 
 noisyEncodedMessages = reshape(bi2de(reshape(noisyEncodedBitstream, [], 8), 'left-msb'), n, []);
 

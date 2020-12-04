@@ -1,80 +1,48 @@
 function reedSolomonBitstream = reedSolomonEncoder(bitstream,snr)
-% This is an implementation of an RS()
+    % Turns the bitstream into an array of 8bit integers
+    intStream = bi2de(reshape(bitstream, [], 8), 'left-msb');
+    
+    % These are the system specifications defined by the JPL technical
+    % documents
+    n = 255;
+    k = 223;
+    primitivePolynomial = 285; % 285 = 0b100011101 -> X^8 + X^4 + X^3 + X^2 + 1
+    m = 8;
+    
+    % Padds the end of the int stream with 0's so that it can be divided
+    % into equal, k length messages
+    numInts = length(intStream);
+    numMsgs = (uint32(numInts / k));
+    paddedLength = k * numMsgs;
 
-% Loads the image and stores its dimensions
-%image = uint8(imread('earth.png'));
-%imageDim = size(image);
+    intStream(paddedLength) = 0;
+    messages = reshape(intStream, k, []);
+    decodedMessages = zeros(size(messages));
 
-% Sets the snr value (dB) for our simulated AWGN
-%snr = 15;
+    gp = rsgenpoly(n, k, primitivePolynomial);
 
-n = 255;
-k = 223;
-primitivePolynomial = 285; % 285 = 0b100011101 -> X^8 + X^4 + X^3 + X^2 + 1
-m = 8;
+    rsEncoder = comm.RSEncoder(n, k, gp);
+    rsDecoder = comm.RSDecoder(n, k, gp);
 
-%intStream = reshape(image, [], 1);
-%bitstream = reshape(de2bi(image, 'left-msb'), 1, []);
+    encodedMessages = zeros(255,8610);%todo dont pre-allocate memory
 
-% The encoder function requires 
-numInts = size(bitstream,2); %imageDim(1) * imageDim(2) * imageDim(3);
-numMsgs = (uint32(numInts / k));
-paddedLength = k * numMsgs;
+    for msg = 1:numMsgs
+        encodedMessages(:, msg) = rsEncoder(messages(:, msg));
+    end
 
-intStream(paddedLength) = 0;
-messages = reshape(intStream, k, []);
-decodedMessages = zeros(size(messages));
+    encodedBitstream = reshape(de2bi(reshape(encodedMessages, 1, []), 'left-msb'), 1, []);
 
-gp = rsgenpoly(n, k, primitivePolynomial);
+    noisyEncodedBitstream = addNoise(encodedBitstream, snr);
 
-rsEncoder = comm.RSEncoder(n, k, gp);
-rsDecoder = comm.RSDecoder(n, k, gp);
+    noisyEncodedMessages = reshape(bi2de(reshape(noisyEncodedBitstream, [], 8), 'left-msb'), n, []);
 
-encodedMessages = zeros(255,8610);%todo dont pre-allocate memory
+    for msg = 1:numMsgs
+        decodedMessages(:, msg) = rsDecoder(noisyEncodedMessages(:, msg));
+    end
 
-for msg = 1:numMsgs
-    encodedMessages(:, msg) = rsEncoder(messages(:, msg));
-end
-
-encodedBitstream = reshape(de2bi(reshape(encodedMessages, 1, []), 'left-msb'), 1, []);
-
-noisyEncodedBitstream = addNoise(encodedBitstream, snr)
-
-%noisyEncodedBitstream = int8(awgn(double(encodedBitstream), snr));
-%noisyEncodedBitstream(find(noisyEncodedBitstream < 0)) = 0;
-%noisyEncodedBitstream(find(noisyEncodedBitstream > 1)) = 1;
-
-% Adds noise to the bitstream to simulate uncoded transmission on a noisy
-% channel.
-%noisyBitstream = int8(awgn(double(bitstream), snr));
-%noisyBitstream(find(noisyBitstream < 0)) = 0;
-%noisyBitstream(find(noisyBitstream > 1)) = 1;
-
-noisyEncodedMessages = reshape(bi2de(reshape(noisyEncodedBitstream, [], 8), 'left-msb'), n, []);
-
-for msg = 1:numMsgs
-    decodedMessages(:, msg) = rsDecoder(noisyEncodedMessages(:, msg));
-end
-
-decodedMessages = decodedMessages(1:numInts);
-%decodedImage = uint8(reshape(decodedMessages(), imageDim(1), imageDim(2), []));
-
-%noisyInts = bi2de(reshape(noisyBitstream, [], 8), 'left-msb');
-%noisyImage = uint8(reshape(noisyInts, imageDim(1), imageDim(2), []));
-% 
-% % plots the original image, the coded and 'transmitted' image, and the
-% % uncoded and 'transmitted' image.
-% subplot(2,2,[1 3]);
-% imshow(image);
-% 
-% subplot(2,2,2);
-% imshow(uint8(noisyImage));
-% 
-% subplot(2,2,4);
-% imshow(decodedImage);
-
-reedSolomonBitstream = reshape(de2bi(reshape(decodedMessages, 1, []), 'left-msb'), 1, []);
-%display(sum(abs(bitstream-uint8(noisyBitstream))) / length(bitstream));
-%display(sum(abs(bitstream-uint8(decodedBitstream))) / length(bitstream));
+    decodedMessages = decodedMessages(1:numInts);
+    reedSolomonBitstream = reshape(de2bi(reshape(decodedMessages, 1, []), 'left-msb'), 1, []);
+    %display(sum(abs(bitstream-uint8(noisyBitstream))) / length(bitstream));
+    %display(sum(abs(bitstream-uint8(decodedBitstream))) / length(bitstream));
 
 end

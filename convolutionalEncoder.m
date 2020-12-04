@@ -15,18 +15,18 @@
 % implementation, a copy of the image is corrupted with AWGN and displayed.
 
 function decodedBitstream = convolutionalEncoder(bitstream, snr)
-% Defines a trellis structure for our encoder implementation. See slide 2
-% of this MIT lecture for a visual representation of this common trellis.
-% https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-973-communication-system-design-spring-2006/lecture-notes/lecture_11.pdf
-trellis = poly2trellis(7, [171, 133]);
-encodedBitstream = convenc(bitstream, trellis);
+    % Defines a trellis structure for our encoder implementation. See slide 2
+    % of this MIT lecture for a visual representation of this common trellis.
+    % https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-973-communication-system-design-spring-2006/lecture-notes/lecture_11.pdf
+    trellis = poly2trellis(7, [171, 133]);
+    encodedBitstream = convenc(bitstream, trellis);
 
-% Adds noise to the encoded bitstream to simulate transmission
-noisyEncodedBitstream = addNoise(encodedBitstream, snr);
+    % Adds noise to the encoded bitstream to simulate transmission
+    noisyEncodedBitstream = addNoise(encodedBitstream, snr);
 
-% Decodes the bitstream with the Viterbi algorithm. Note: 5 = traceback
-% depth. This is a generalized value for rate 1/2 codes.
-decodedBitstream = vitdec(noisyEncodedBitstream, trellis, 5, 'trunc', 'hard');
+    % Decodes the bitstream with the Viterbi algorithm. Note: 5 = traceback
+    % depth. This is a generalized value for rate 1/2 codes.
+    decodedBitstream = vitdec(noisyEncodedBitstream, trellis, 5, 'trunc', 'hard');
 end
 
 
