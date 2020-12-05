@@ -15,16 +15,16 @@ function reedSolomonBitstream = reedSolomonEncoder(bitstream,snr)
     numMsgs = (uint32(numInts / k));
     paddedLength = k * numMsgs;
 
+    % Turns the intstream into an array of k length messages
     intStream(paddedLength) = 0;
     messages = reshape(intStream, k, []);
+    % Preallocates a decodedMessages array
     decodedMessages = zeros(size(messages));
-
+    
+    % Creates RS encoder and decoder structures
     gp = rsgenpoly(n, k, primitivePolynomial);
-
     rsEncoder = comm.RSEncoder(n, k, gp);
     rsDecoder = comm.RSDecoder(n, k, gp);
-
-    encodedMessages = zeros(255,8610);%if something fails here remove this line
 
     for msg = 1:numMsgs
         encodedMessages(:, msg) = rsEncoder(messages(:, msg));
