@@ -45,7 +45,9 @@ noisyBitstream = int8(awgn(double(bitstream), snr));
 noisyBitstream(find(noisyBitstream < 0)) = 0;
 noisyBitstream(find(noisyBitstream > 1)) = 1;
 
+%converts noisy binary numbers to a stream of decimal numbers
 noisyEncodedMessages = reshape(bi2de(reshape(noisyEncodedBitstream, [], 8), 'left-msb'), n, []);
+
 
 for msg = 1:numMsgs
     decodedMessages(:, msg) = rsDecoder(noisyEncodedMessages(:, msg));

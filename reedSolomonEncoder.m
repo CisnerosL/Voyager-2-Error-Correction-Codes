@@ -1,4 +1,4 @@
-function reedSolomonBitstream = reedSolomonEncoder(bitstream,snr)
+function decodedMessages = reedSolomonEncoder(bitstream,snr)
     % Turns the bitstream into an array of 8bit integers
     intStream = bi2de(reshape(bitstream, [], 8), 'left-msb');
     
@@ -24,7 +24,7 @@ function reedSolomonBitstream = reedSolomonEncoder(bitstream,snr)
     rsEncoder = comm.RSEncoder(n, k, gp);
     rsDecoder = comm.RSDecoder(n, k, gp);
 
-    encodedMessages = zeros(255,8610);%todo dont pre-allocate memory
+    encodedMessages = zeros(255,8610);%if something fails here remove this line
 
     for msg = 1:numMsgs
         encodedMessages(:, msg) = rsEncoder(messages(:, msg));
