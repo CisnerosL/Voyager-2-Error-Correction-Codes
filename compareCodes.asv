@@ -15,8 +15,10 @@ for snrVal = 10:snr
 end
 
 clf;
+%hold on;
 lineseries = semilogy(snrData, snrUnencodeData, 'o-');
 hold on;
 lineseries = semilogy(snrData, snrDecodeData, 'o-');
 grid on;
+%hold off;
 
