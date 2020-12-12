@@ -23,7 +23,7 @@ function decodedBitstream = convolutionalEncoder(bitstream, snr)
 
     % Adds noise to the encoded bitstream to simulate transmission
     noisyEncodedBitstream = addNoise(encodedBitstream, snr);
-
+    
     % Decodes the bitstream with the Viterbi algorithm. Note: 5 = traceback
     % depth. This is a generalized value for rate 1/2 codes.
     decodedBitstream = vitdec(noisyEncodedBitstream, trellis, 5, 'trunc', 'hard');
