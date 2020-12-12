@@ -1,4 +1,4 @@
-function reedSolomonBitstream = reedSolomonEncoder(bitstream,snr)
+function reedSolomonBitstream = simulateReedSolomon(bitstream,snr)
     % Turns the bitstream into an array of 8bit integers
     intStream = bi2de(reshape(bitstream, [], 8), 'left-msb');
     

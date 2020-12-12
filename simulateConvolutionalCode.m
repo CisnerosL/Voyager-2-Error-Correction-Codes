@@ -14,7 +14,7 @@
 % 'transmitted' image. To demonstrate this implementatation vs an uncoded
 % implementation, a copy of the image is corrupted with AWGN and displayed.
 
-function decodedBitstream = convolutionalEncoder(bitstream, snr)
+function decodedBitstream = simulateConvolutionalCode(bitstream, snr)
     % Defines a trellis structure for our encoder implementation. See slide 2
     % of this MIT lecture for a visual representation of this common trellis.
     % https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-973-communication-system-design-spring-2006/lecture-notes/lecture_11.pdf

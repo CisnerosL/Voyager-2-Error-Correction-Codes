@@ -1,4 +1,4 @@
-function decodedBitstream = concatenatedRSV(bitstream, snr)
+function decodedBitstream = simulateConcatenatedRSV(bitstream, snr)
     % Turns the bitstream into an array of 8bit integers
     intStream = bi2de(reshape(bitstream, [], 8), 'left-msb');
     
@@ -36,7 +36,7 @@ function decodedBitstream = concatenatedRSV(bitstream, snr)
     
     % Encodes, adds noise, and decodes the bitstream with the convolutional
     % encoder
-    noisyRSencodedBitstream = convolutionalEncoder(RSencodedBitstream, snr);
+    noisyRSencodedBitstream = simulateConvolutionalCode(RSencodedBitstream, snr);
     
     % Turns the birstream into an int stream
     noisyEncodedMessages = reshape(bi2de(reshape(noisyRSencodedBitstream, [], 8), 'left-msb'), n, []);
