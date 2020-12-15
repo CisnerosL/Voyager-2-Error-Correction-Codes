@@ -15,7 +15,7 @@
 % implementation, a copy of the image is corrupted with AWGN and displayed.
 
 % Loads the image and stores its dimensions
-image = uint8(imread('earth.png'));
+image = uint8(imread('../testImages/earth.png'));
 imageDim = size(image);
 
 % Sets the snr value (dB) for our simulated AWGN

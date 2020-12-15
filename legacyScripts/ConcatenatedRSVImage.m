@@ -2,7 +2,7 @@
 % with both the V2 RSV ECC schema and no error correction. The script
 % displays the original, uncoded, and V2 RSV coded images.
 
-image = uint8(imread('earth.png')); % Loads the image and stores its dimensions
+image = uint8(imread('./testImages/earth.png')); % Loads the image and stores its dimensions
 imageDim = size(image);
 bitstream = reshape(de2bi(image, 'left-msb'), 1, []);
 snr = 3;

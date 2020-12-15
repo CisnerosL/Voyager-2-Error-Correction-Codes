@@ -1,7 +1,7 @@
 % This is the original script where we cut our teeth on the ECC libraries
 % and the means by which to transmit an image and simulate noise.
 
-I = uint8(imread('c.png'));
+I = uint8(imread('../testImages/earth.png'));
 imageDim = size(I);
 snr = 15;
 
