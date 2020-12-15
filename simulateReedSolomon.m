@@ -1,3 +1,10 @@
+% Noisy BPSK Transmission Simulation w/ Reed-Solomon (255, 223) Error Correction
+%
+% By Matthew Luyten and Luis Cisneros
+%
+% This function simulates the transmission of a bitstream encoded with an
+% RS(255,223) ECC at a defined SNR in dB.
+
 function reedSolomonBitstream = simulateReedSolomon(bitstream,snr)
     % Turns the bitstream into an array of 8bit integers
     intStream = bi2de(reshape(bitstream, [], 8), 'left-msb');
@@ -25,24 +32,28 @@ function reedSolomonBitstream = simulateReedSolomon(bitstream,snr)
     gp = rsgenpoly(n, k, primitivePolynomial);
     rsEncoder = comm.RSEncoder(n, k, gp);
     rsDecoder = comm.RSDecoder(n, k, gp);
-
+    
+    % Encodes all messages
     for msg = 1:numMsgs
         encodedMessages(:, msg) = rsEncoder(messages(:, msg));
     end
-
+    
+    % Turns message byte array into a bitstream
     encodedBitstream = reshape(de2bi(reshape(encodedMessages, 1, []), 'left-msb'), 1, []);
-
-    noisyEncodedBitstream = addNoise(encodedBitstream, snr);
-
+    
+    % Simulates transmission over noisy BPSK channel
+    noisyEncodedBitstream = simulateTransmission(encodedBitstream, snr);
+    
+    % Turns bitstream into encoded message byte array
     noisyEncodedMessages = reshape(bi2de(reshape(noisyEncodedBitstream, [], 8), 'left-msb'), n, []);
-
+    
+    % Decodes message
     for msg = 1:numMsgs
         decodedMessages(:, msg) = rsDecoder(noisyEncodedMessages(:, msg));
     end
-
+    
+    % Turns decoded message array into bitstream and removes zero-padding
     decodedMessages = decodedMessages(1:numInts);
     reedSolomonBitstream = reshape(de2bi(reshape(decodedMessages, 1, []), 'left-msb'), 1, []);
-    %display(sum(abs(bitstream-uint8(noisyBitstream))) / length(bitstream));
-    %display(sum(abs(bitstream-uint8(decodedBitstream))) / length(bitstream));
 
 end

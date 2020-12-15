@@ -1,3 +1,11 @@
+% Noisy BPSK Transmission Simulation w/ V2 RSV Error Correction
+%
+% By Matthew Luyten and Luis Cisneros
+%
+% This function simulates the transmission of a bitstream encoded with an
+% RS(255,223) ECC concatenated with a K=7, rate 1/2 convolutional encoder
+% at a defined SNR in dB.
+
 function decodedBitstream = simulateConcatenatedRSV(bitstream, snr)
     % Turns the bitstream into an array of 8bit integers
     intStream = bi2de(reshape(bitstream, [], 8), 'left-msb');
@@ -34,8 +42,8 @@ function decodedBitstream = simulateConcatenatedRSV(bitstream, snr)
     % Turns the encoded message array into a stream of bits
     RSencodedBitstream = reshape(de2bi(reshape(encodedMessages, 1, []), 'left-msb'), 1, []);
     
-    % Encodes, adds noise, and decodes the bitstream with the convolutional
-    % encoder
+    % Encodes, simulates noisy BPSK transmission, and decodes the bitstream 
+    % with the convolutional encoder
     noisyRSencodedBitstream = simulateConvolutionalCode(RSencodedBitstream, snr);
     
     % Turns the birstream into an int stream
@@ -46,6 +54,7 @@ function decodedBitstream = simulateConcatenatedRSV(bitstream, snr)
         decodedMessages(:, msg) = rsDecoder(noisyEncodedMessages(:, msg));
     end
     
+    % Turns decoded message array into bitstream and removes zero-padding
     decodedMessages = decodedMessages(1:numInts);
     decodedBitstream = reshape(de2bi(decodedMessages, 'left-msb'), 1, []);
     
