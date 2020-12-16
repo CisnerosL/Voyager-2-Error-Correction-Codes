@@ -11,7 +11,7 @@
 images = {'./testImages/windows.png'}; % Defines desired image files for transmission
 totalBits = 0;
 numPasses = 6;
-snrArray = (1:0.5:10); % Defines the various SNR values to be tested
+snrArray = (0:0.5:8); % Defines the various SNR values to be tested
 
 % Preallocates arrays to keep track of the number of errors at each SNR
 % value
